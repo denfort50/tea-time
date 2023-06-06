@@ -28,6 +28,7 @@ public class PersonRepositoryJdbc implements PersonRepository {
 
     private final RowMapper<Person> personRowMapper = (resultSet, rowNum) -> {
         Person person = new Person();
+        person.setId(resultSet.getLong("id"));
         person.setFirstName(resultSet.getString("first_name"));
         person.setLastName(resultSet.getString("last_name"));
         person.setEmail(resultSet.getString("email"));
@@ -41,7 +42,11 @@ public class PersonRepositoryJdbc implements PersonRepository {
 
     @Override
     public Optional<Person> findById(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject(FIND_BY_ID, personRowMapper, id));
+        List<Person> result = jdbcTemplate.query(FIND_BY_ID, personRowMapper, id);
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(result.get(0));
     }
 
     @Override
@@ -63,7 +68,6 @@ public class PersonRepositoryJdbc implements PersonRepository {
         jdbcTemplate.update(UPDATE, person.getFirstName(), person.getLastName(), person.getEmail(), person.getId());
         return person;
     }
-
 
     @Override
     public void deleteById(Long id) {

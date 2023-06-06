@@ -1,14 +1,19 @@
 package ru.dkalchenko.teatime.config;
 
-import liquibase.integration.spring.SpringLiquibase;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-public class ApplicationConfig {
+@Configuration
+@PropertySource("classpath:db.properties")
+@EnableTransactionManagement
+public class JdbcConfig {
 
     @Bean
     public DataSource dataSource(@Value("${jdbc.driver}") String driver,
@@ -26,13 +31,5 @@ public class ApplicationConfig {
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
-    }
-
-    @Bean
-    public SpringLiquibase liquibase(DataSource dataSource) {
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setChangeLog("classpath:db/liquibase-changeLog.xml");
-        liquibase.setDataSource(dataSource);
-        return liquibase;
     }
 }
