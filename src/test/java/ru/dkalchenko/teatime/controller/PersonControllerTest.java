@@ -42,7 +42,7 @@ import ru.dkalchenko.teatime.repository.PersonRepositoryJdbc;
 import ru.dkalchenko.teatime.service.PersonService;
 import ru.dkalchenko.teatime.service.PersonServiceImpl;
 
-@ContextConfiguration(classes = PersonController.class)
+@ContextConfiguration(classes = {PersonController.class, PersonModelAssembler.class})
 @ExtendWith(SpringExtension.class)
 class PersonControllerTest {
 
