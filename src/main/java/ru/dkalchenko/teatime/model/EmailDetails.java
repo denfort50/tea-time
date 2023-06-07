@@ -5,6 +5,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class EmailDetails {
 
     @NonNull
