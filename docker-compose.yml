@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    container_name: db
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=tea_time
+      - GDATA=/var/lib/postgresql/data
+    volumes:
+      - ./db/tea_time/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+  app:
+    image: tea-time
+    container_name: tea-time
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tea_time
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - "127.0.0.1:80:8081"
+    depends_on:
+      - db

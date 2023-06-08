@@ -15,10 +15,9 @@
 * Apache Maven 3.8
 * PostgreSQL 14
 
-## Инструкция по запуску проекта
-1) Скачать и разархивировать проект
-2) В PostgreSQL создать базу данных tea_time (url = `jdbc:postgresql://127.0.0.1:5432/tea_time`)
-3) Открыть командную строку и перейти в папку с проектом, например `cd c:\projects\tea-time`
-4) Выполнить команду `mvn install`
-5) Перейти в папку target командой `cd target`
-6) Выполнить команду `java -jar tea-time-1.0.jar`
+## Инструкция по запуску проекта в Docker
+1) Скачать репозиторий `git clone https://github.com/denfort50/tea-time`
+2) Перейти в папку с проектом `cd c:\projects\tea-time`
+3) Собрать проект `mvn install`
+4) Собрать образ `docker build -t tea-time .`
+5) Запустить контейнер `docker-compose up`

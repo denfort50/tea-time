@@ -28,7 +28,7 @@ public class PersonController {
 
     @GetMapping()
     public CollectionModel<EntityModel<Person>> all() {
-        List<EntityModel<Person>> persons = personService.findAll().stream() //
+        List<EntityModel<Person>> persons = personService.findAll().stream()
                 .map(assembler::toModel) //
                 .collect(Collectors.toList());
         return CollectionModel.of(persons, linkTo(methodOn(PersonController.class).all()).withSelfRel());
