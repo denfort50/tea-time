@@ -1,5 +1,7 @@
 package ru.dkalchenko.teatime.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -20,6 +22,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/persons")
 @AllArgsConstructor
+@Tag(name = "Контролер для манипуляции списком адресатов",
+        description = "Контроллер обрабатывает запросы на создание, чтение, обновление и удаление адресатов")
 public class PersonController {
 
     private final PersonService personService;
@@ -27,6 +31,7 @@ public class PersonController {
     private final PersonModelAssembler assembler;
 
     @GetMapping()
+    @Operation(summary = "Показать все", description = "Позволяет получить список всех адресатов")
     public CollectionModel<EntityModel<Person>> all() {
         List<EntityModel<Person>> persons = personService.findAll().stream()
                 .map(assembler::toModel) //
@@ -35,6 +40,7 @@ public class PersonController {
     }
 
     @PostMapping
+    @Operation(summary = "Сохранить", description = "Позволяет сохранить нового адресата")
     public ResponseEntity<?> newPerson(@RequestBody Person newPerson) {
         EntityModel<Person> entityModel = assembler.toModel(personService.save(newPerson));
         return ResponseEntity
@@ -43,6 +49,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Найти по ID", description = "Позволяет найти адресата по ID")
     public EntityModel<Person> one(@PathVariable Long id) {
         Person person = personService.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
@@ -50,6 +57,7 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Обновить", description = "Позволяет обновить данные адресата")
     public ResponseEntity<?> replacePerson(@RequestBody Person newPerson, @PathVariable Long id) {
         Person updatedPerson = personService.findById(id)
                 .map(person -> {
@@ -69,6 +77,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить", description = "Позволяет удалить адресата из списка")
     public ResponseEntity<?> deletePerson(@PathVariable Long id) {
         personService.deleteById(id);
         return ResponseEntity.noContent().build();
