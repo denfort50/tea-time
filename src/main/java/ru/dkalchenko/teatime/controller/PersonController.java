@@ -13,6 +13,7 @@ import ru.dkalchenko.teatime.exception.PersonNotFoundException;
 import ru.dkalchenko.teatime.model.Person;
 import ru.dkalchenko.teatime.service.PersonService;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class PersonController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Найти по ID", description = "Позволяет найти адресата по ID")
-    public EntityModel<Person> one(@PathVariable Long id) {
+    public EntityModel<Person> one(@PathVariable BigInteger id) {
         Person person = personService.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
         return assembler.toModel(person);
@@ -58,7 +59,7 @@ public class PersonController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновить", description = "Позволяет обновить данные адресата")
-    public ResponseEntity<?> replacePerson(@RequestBody Person newPerson, @PathVariable Long id) {
+    public ResponseEntity<?> replacePerson(@RequestBody Person newPerson, @PathVariable BigInteger id) {
         Person updatedPerson = personService.findById(id)
                 .map(person -> {
                     person.setFirstName(newPerson.getFirstName());
@@ -78,7 +79,7 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить", description = "Позволяет удалить адресата из списка")
-    public ResponseEntity<?> deletePerson(@PathVariable Long id) {
+    public ResponseEntity<?> deletePerson(@PathVariable BigInteger id) {
         personService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

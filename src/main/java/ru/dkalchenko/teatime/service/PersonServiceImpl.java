@@ -3,8 +3,9 @@ package ru.dkalchenko.teatime.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.dkalchenko.teatime.model.Person;
-import ru.dkalchenko.teatime.repository.PersonRepository;
+import ru.dkalchenko.teatime.repository.PersonRepositoryMongo;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PersonServiceImpl implements PersonService {
 
-    private final PersonRepository personRepository;
+    private final PersonRepositoryMongo personRepository;
 
     @Override
     public List<Person> findAll() {
@@ -20,7 +21,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> findById(Long id) {
+    public Optional<Person> findById(BigInteger id) {
         return personRepository.findById(id);
     }
 
@@ -31,11 +32,11 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person update(Person person) {
-        return personRepository.update(person);
+        return personRepository.save(person);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(BigInteger id) {
         personRepository.deleteById(id);
     }
 }

@@ -5,16 +5,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 import ru.dkalchenko.teatime.model.Person;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository
 @AllArgsConstructor
 public class PersonRepositoryJdbc implements PersonRepository {
 
@@ -28,7 +27,7 @@ public class PersonRepositoryJdbc implements PersonRepository {
 
     private final RowMapper<Person> personRowMapper = (resultSet, rowNum) -> {
         Person person = new Person();
-        person.setId(resultSet.getLong("id"));
+        person.setId(BigInteger.valueOf(resultSet.getInt("id")));
         person.setFirstName(resultSet.getString("first_name"));
         person.setLastName(resultSet.getString("last_name"));
         person.setEmail(resultSet.getString("email"));
@@ -41,7 +40,7 @@ public class PersonRepositoryJdbc implements PersonRepository {
     }
 
     @Override
-    public Optional<Person> findById(Long id) {
+    public Optional<Person> findById(BigInteger id) {
         List<Person> result = jdbcTemplate.query(FIND_BY_ID, personRowMapper, id);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -59,7 +58,7 @@ public class PersonRepositoryJdbc implements PersonRepository {
             preparedStatement.setString(3, person.getEmail());
             return preparedStatement;
         }, keyHolder);
-        person.setId((long) (Objects.requireNonNull(keyHolder.getKeys()).get("id")));
+        person.setId((BigInteger) (Objects.requireNonNull(keyHolder.getKeys()).get("id")));
         return person;
     }
 
@@ -70,7 +69,7 @@ public class PersonRepositoryJdbc implements PersonRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(BigInteger id) {
         jdbcTemplate.update(DELETE, id);
     }
 }
