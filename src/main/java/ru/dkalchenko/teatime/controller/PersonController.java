@@ -9,11 +9,10 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.dkalchenko.teatime.assembler.PersonModelAssembler;
-import ru.dkalchenko.teatime.exception.PersonNotFoundException;
+import ru.dkalchenko.teatime.exception.PersonByIdNotFoundException;
 import ru.dkalchenko.teatime.model.Person;
 import ru.dkalchenko.teatime.service.PersonService;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,26 +50,16 @@ public class PersonController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Найти по ID", description = "Позволяет найти адресата по ID")
-    public EntityModel<Person> one(@PathVariable BigInteger id) {
+    public EntityModel<Person> one(@PathVariable String id) {
         Person person = personService.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
+                .orElseThrow(() -> new PersonByIdNotFoundException(id));
         return assembler.toModel(person);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Обновить", description = "Позволяет обновить данные адресата")
-    public ResponseEntity<?> replacePerson(@RequestBody Person newPerson, @PathVariable BigInteger id) {
-        Person updatedPerson = personService.findById(id)
-                .map(person -> {
-                    person.setFirstName(newPerson.getFirstName());
-                    person.setLastName(newPerson.getLastName());
-                    person.setEmail(newPerson.getEmail());
-                    return personService.update(person);
-                })
-                .orElseGet(() -> {
-                    newPerson.setId(id);
-                    return personService.save(newPerson);
-                });
+    public ResponseEntity<?> replacePerson(@RequestBody Person newPerson, @PathVariable String id) {
+        Person updatedPerson = personService.update(newPerson, id);
         EntityModel<Person> entityModel = assembler.toModel(updatedPerson);
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -79,7 +68,7 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить", description = "Позволяет удалить адресата из списка")
-    public ResponseEntity<?> deletePerson(@PathVariable BigInteger id) {
+    public ResponseEntity<?> deletePerson(@PathVariable String id) {
         personService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

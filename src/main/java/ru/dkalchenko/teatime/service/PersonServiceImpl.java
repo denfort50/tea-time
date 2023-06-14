@@ -2,10 +2,10 @@ package ru.dkalchenko.teatime.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.dkalchenko.teatime.exception.PersonByEmailNotFoundException;
 import ru.dkalchenko.teatime.model.Person;
 import ru.dkalchenko.teatime.repository.PersonRepositoryMongo;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +21,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> findById(BigInteger id) {
+    public Optional<Person> findById(String id) {
         return personRepository.findById(id);
+    }
+
+    public Optional<Person> findByEmail(String email) {
+        return personRepository.findByEmail(email);
     }
 
     @Override
@@ -31,12 +35,19 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person update(Person person) {
-        return personRepository.save(person);
+    public Person update(Person newPerson, String id) {
+        return findById(id)
+                .map(person -> {
+                    person.setFirstName(newPerson.getFirstName());
+                    person.setLastName(newPerson.getLastName());
+                    person.setEmail(newPerson.getEmail());
+                    return save(person);
+                })
+                .orElseThrow(() -> new PersonByEmailNotFoundException(newPerson.getEmail()));
     }
 
     @Override
-    public void deleteById(BigInteger id) {
+    public void deleteById(String id) {
         personRepository.deleteById(id);
     }
 }

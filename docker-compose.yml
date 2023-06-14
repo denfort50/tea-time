@@ -1,26 +1,38 @@
 version: "3.9"
 services:
-  db:
-    image: postgres
-    container_name: db
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=tea_time
-      - GDATA=/var/lib/postgresql/data
-    volumes:
-      - ./db/tea_time/data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    restart: always
-  app:
-    image: tea-time
-    container_name: tea-time
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tea_time
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=password
-    ports:
-      - "127.0.0.1:80:8081"
-    depends_on:
-      - db
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        ports:
+            - 27017:27017
+        volumes:
+            - data:/data
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=rootuser
+            - MONGO_INITDB_ROOT_PASSWORD=rootpass
+    mongo-express:
+        image: mongo-express
+        container_name: mongo-express
+        restart: always
+        ports:
+            - 8082:8082
+        environment:
+            - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
+            - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+            - ME_CONFIG_MONGODB_SERVER=mongodb
+#    app:
+#        image: tea-time
+#        container_name: tea-time
+#        environment:
+#            - SPRING_DATASOURCE_URL=
+#            - SPRING_DATASOURCE_USERNAME=
+#            - SPRING_DATASOURCE_PASSWORD=
+#        ports:
+#            - "127.0.0.1:80:8081"
+#        depends_on:
+#            - mongodb
+volumes:
+    data: {}
+networks:
+    default:
+        name: mongodb_network

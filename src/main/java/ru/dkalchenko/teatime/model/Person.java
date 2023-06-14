@@ -1,22 +1,20 @@
 package ru.dkalchenko.teatime.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @Document
 @RequiredArgsConstructor
 @NoArgsConstructor
 public class Person {
 
     @Id
-    private BigInteger id;
+    private String id;
 
     @NonNull
     private String firstName;
@@ -26,4 +24,21 @@ public class Person {
 
     @NonNull
     private String email;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Person person = (Person) o;
+        return firstName.equals(person.firstName) && lastName.equals(person.lastName) && email.equals(person.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email);
+    }
 }

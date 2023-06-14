@@ -10,9 +10,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PersonNotFoundAdvice {
 
     @ResponseBody
-    @ExceptionHandler(PersonNotFoundException.class)
+    @ExceptionHandler(PersonByIdNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String personNotFoundHandler(PersonNotFoundException ex) {
+    public String personByIdNotFoundHandler(PersonByIdNotFoundException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(PersonByEmailNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String personByEmailNotFoundHandler(PersonByEmailNotFoundException ex) {
         return ex.getMessage();
     }
 }
