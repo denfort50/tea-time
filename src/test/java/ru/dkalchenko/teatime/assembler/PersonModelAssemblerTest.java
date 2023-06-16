@@ -29,7 +29,7 @@ class PersonModelAssemblerTest {
         Person person = new Person();
         person.setEmail("jane.doe@example.org");
         person.setFirstName("Jane");
-        person.setId(1L);
+        person.setId("1");
         person.setLastName("Doe");
         EntityModel<Person> actualToModelResult = personModelAssembler.toModel(person);
         assertSame(person, actualToModelResult.getContent());
@@ -40,14 +40,14 @@ class PersonModelAssemblerTest {
     @Test
     public void testToModel2() {
         Person person = mock(Person.class);
-        when(person.getId()).thenReturn(1L);
+        when(person.getId()).thenReturn("1");
         doNothing().when(person).setEmail(any());
         doNothing().when(person).setFirstName(any());
         doNothing().when(person).setId(any());
         doNothing().when(person).setLastName(any());
         person.setEmail("jane.doe@example.org");
         person.setFirstName("Jane");
-        person.setId(1L);
+        person.setId("1");
         person.setLastName("Doe");
         EntityModel<Person> actualToModelResult = personModelAssembler.toModel(person);
         assertTrue(actualToModelResult.hasLinks());
